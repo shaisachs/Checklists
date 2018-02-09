@@ -1,0 +1,7 @@
+- [x] DTOs
+- [x] validation - verify that habitId is correct in completions; invalidate PUT with habitId change
+- [x] service / repository layer
+- [x] migrations
+- [ ] stats on habits
+- [ ] functional tests
+- [ ] automate translator, repo injection in startup.cs
