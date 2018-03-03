@@ -1,7 +1,8 @@
-- [ ] stats on habits
+- [ ] stats
 - [ ] functional tests
   - [ ] tenancy
   - [ ] basic CRUD works
 - [ ] automate translator, repo injection in startup.cs
 - [ ] refactor infrastructure classes into framework
 - [ ] dev config for authentication
+- [x] check out http://geeklearning.io/a-different-approach-to-test-your-asp-net-core-application/ and https://www.davepaquette.com/archive/2016/11/27/integration-testing-with-entity-framework-core-and-sql-server.aspx
