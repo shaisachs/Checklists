@@ -7,6 +7,8 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Checklists.Repositories;
 
 namespace Checklists
 {
@@ -17,9 +19,13 @@ namespace Checklists
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+        public static IWebHost BuildWebHost(string[] args) {
+            var builder = WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>();
+
+            builder.ConfigureServices(s => s.AddSingleton<IStartupConfigurationService, StartupConfigurationService<ChecklistsContext>>());
+
+            return builder.Build();
+        }
     }
 }

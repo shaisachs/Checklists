@@ -21,8 +21,10 @@ namespace Checklists
 {
     public class Startup
     {
-        
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        private IStartupConfigurationService _externalStartupConfiguration;
+
+        public Startup(IConfiguration configuration, IHostingEnvironment env,
+            IStartupConfigurationService externalStartupConfiguration)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -32,6 +34,8 @@ namespace Checklists
             Configuration = builder.Build();
 
             HostingEnvironment = env;
+            _externalStartupConfiguration = externalStartupConfiguration;
+            _externalStartupConfiguration.ConfigureEnvironment(env);
         }
 
         public IConfiguration Configuration { get; }
@@ -41,17 +45,6 @@ namespace Checklists
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthentication().AddRapidApiAuthentication();
-
-            if (HostingEnvironment.IsDevelopment())
-            {
-                services.AddDbContext<ChecklistsContext>(opt => opt.UseInMemoryDatabase("Checklists"));
-            }
-            else
-            {
-                var connection = Configuration.GetConnectionString("defaultConnection");
-                services.AddDbContext<ChecklistsContext>(options => options.UseSqlServer(connection));
-            }
-
             services.AddMvc();
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddAutoMapper(x=> x.AddProfile(new MappingsProfile()));
@@ -66,10 +59,12 @@ namespace Checklists
             services.AddScoped<BaseValidator<Checklist>, ChecklistValidator>();
             services.AddScoped<BaseTranslator<Checklist, ChecklistDto>, ChecklistTranslator>();
             services.AddScoped<ChecklistRepository, ChecklistRepository>();
+
+            _externalStartupConfiguration.ConfigureService(services, null);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseAuthentication();
 
@@ -84,7 +79,15 @@ namespace Checklists
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Checklists API V1");
             });
 
+            _externalStartupConfiguration.Configure(app, env, loggerFactory);
+
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                serviceScope.ServiceProvider.GetService<ChecklistsContext>().Database.EnsureCreated();
+            }
+
             app.UseMvc();
         }
+
     }
 }
