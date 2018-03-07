@@ -41,13 +41,27 @@ namespace Checklists
         public IConfiguration Configuration { get; }
         public IHostingEnvironment HostingEnvironment { get; }    
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthentication().AddRapidApiAuthentication();
+
+/*
+            if (HostingEnvironment.IsDevelopment())
+            {
+                services.AddDbContext<ChecklistsContext>(opt => opt.UseInMemoryDatabase("Checklists"));
+            }
+            else
+            {
+                var connection = Configuration.GetConnectionString("defaultConnection");
+                services.AddDbContext<ChecklistsContext>(options => options.UseSqlServer(connection));
+            }
+*/
+
             services.AddMvc();
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddAutoMapper(x=> x.AddProfile(new MappingsProfile()));
+
+            services.AddSingleton<IMapper>(
+                new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new MappingsProfile()))));
 
             services.AddSwaggerGen(c =>
             {

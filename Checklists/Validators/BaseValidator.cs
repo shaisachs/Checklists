@@ -67,7 +67,7 @@ namespace Checklists.Validators
 
         private ValidationError TranslateValidationResult(ValidationResult result)
         {
-            return new ValidationError() { ErrorCode = "PROPERTY_INVALID", Message = result.ErrorMessage };
+            return new ValidationError() { ErrorCode = ValidationError.PropertyInvalidErrorCode, Message = result.ErrorMessage };
         }
 
     }

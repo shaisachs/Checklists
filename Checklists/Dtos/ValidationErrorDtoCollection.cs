@@ -7,6 +7,10 @@ namespace Checklists.Dtos
     {
         public IEnumerable<ValidationErrorDto> Items { get; private set; }
 
+        public ValidationErrorDtoCollection()
+        {
+            Items = new List<ValidationErrorDto>();
+        }
         public ValidationErrorDtoCollection(ValidationErrorDto error)
         {
             Items = new[] { error };
