@@ -8,6 +8,7 @@ using Checklists.Dtos;
 using Checklists.Translators;
 using Checklists.Repositories;
 using Checklists.Validators;
+using System.Net;
 
 namespace Checklists.Controllers
 {
@@ -15,19 +16,17 @@ namespace Checklists.Controllers
         where TModel : BaseModel
         where TDto : BaseDto<TModel>
     {
-        private readonly string _getSingularRouteName;
         private readonly BaseTranslator<TModel, TDto> _translator;
         private readonly BaseValidator<TModel> _validator;
         private readonly BaseRepository<TModel> _repo;
         private readonly ValidationErrorTranslator _errorTranslator;
 
-        public BaseController(string getSingularRouteName,
+        public BaseController(
             BaseTranslator<TModel, TDto> translator,
             BaseValidator<TModel> validator,
             BaseRepository<TModel> repo,
             ValidationErrorTranslator errorTranslator)
         {
-            _getSingularRouteName = getSingularRouteName;
             _validator = validator;
             _translator = translator;
             _repo = repo;
@@ -52,6 +51,7 @@ namespace Checklists.Controllers
                 return NotFound();
             }
 
+            Response.StatusCode = (int) HttpStatusCode.OK;
             return new ObjectResult(_translator.Translate(model));
         }
 
@@ -77,7 +77,8 @@ namespace Checklists.Controllers
 
             model = _repo.CreateItem(model, CurrentUserName());
 
-            return CreatedAtRoute(_getSingularRouteName, new { id = model.Id }, _translator.Translate(model));
+            Response.StatusCode = (int) HttpStatusCode.Created;
+            return new ObjectResult(_translator.Translate(model));
         }
 
         protected IActionResult UpdateBase(long id, TDto newDto)

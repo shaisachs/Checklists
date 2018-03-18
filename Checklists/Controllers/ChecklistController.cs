@@ -19,7 +19,7 @@ namespace Checklists.Controllers
             BaseValidator<Checklist> validator,
             ChecklistRepository repo,
             ValidationErrorTranslator errorTranslator) :
-            base("GetChecklist", translator, validator, repo, errorTranslator)
+            base(translator, validator, repo, errorTranslator)
         {
         }
 
@@ -29,7 +29,7 @@ namespace Checklists.Controllers
             return base.GetAllBase();
         }
 
-        [HttpGet("{id}", Name = "GetChecklist")]
+        [HttpGet("{id}")]
         public IActionResult GetById(long id)
         {
             return base.GetByIdBase(id);
