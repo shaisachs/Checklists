@@ -9,6 +9,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="appsettings.Test.json" CopyToOutputDirectory="Always" />
+    <None Include="appsettings.Development.json" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.1" PrivateAssets="All"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1"/>

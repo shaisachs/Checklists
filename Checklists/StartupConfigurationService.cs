@@ -22,9 +22,9 @@ namespace Checklists
     public class StartupConfigurationService<TDbContext> : IStartupConfigurationService  
         where TDbContext : DbContext
     {
-        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) { }
-
         public virtual void ConfigureEnvironment(IHostingEnvironment env) { }
+
+        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) { }
 
         public virtual void ConfigureService(IServiceCollection services, IConfigurationRoot configuration)
         {

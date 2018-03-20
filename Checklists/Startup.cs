@@ -26,16 +26,16 @@ namespace Checklists
         public Startup(IConfiguration configuration, IHostingEnvironment env,
             IStartupConfigurationService externalStartupConfiguration)
         {
+            HostingEnvironment = env;
+            _externalStartupConfiguration = externalStartupConfiguration;
+            _externalStartupConfiguration.ConfigureEnvironment(env);
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
-
-            HostingEnvironment = env;
-            _externalStartupConfiguration = externalStartupConfiguration;
-            _externalStartupConfiguration.ConfigureEnvironment(env);
         }
 
         public IConfiguration Configuration { get; }

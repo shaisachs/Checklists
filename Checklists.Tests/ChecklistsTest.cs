@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using Checklists.Validators;
+using Checklists.Auth;
 
 namespace Checklists.Tests
 {
@@ -24,6 +25,7 @@ namespace Checklists.Tests
         private readonly HttpClient _client;
         private readonly ChecklistsContext _context;
 
+        private const string DefaultUsername = "alice";
         private const int IdThatIsOutOfRange = -1;
         private const int IdThatDoesNotExist = 200;
         private const int IdThatWasDeleted = 30;
@@ -42,21 +44,33 @@ namespace Checklists.Tests
 
             _server = new TestServer(webHostBuilder.UseStartup<Startup>());
             _context = _server.Host.Services.GetService(typeof(ChecklistsContext)) as ChecklistsContext;
-            _client = _server.CreateClient();
+            _client = SetupClient();
 
+            SetupTestData();
+        }
+
+        private HttpClient SetupClient()
+        {
+            var client = _server.CreateClient();
+            client.DefaultRequestHeaders.Add(RapidApiAuthenticationHandler.RapidApiSecretHeaderName, "TestingAuthSecret");
+            client.DefaultRequestHeaders.Add(RapidApiAuthenticationHandler.RapidApiUsernameHeaderName, DefaultUsername);
+            return client;
+        }
+
+        private void SetupTestData()
+        {
             var repo = new ChecklistRepository(_context);
-            repo.CreateItem(new Checklist() { Name = NameForValidId, Id = IdThatIsValid }, "alice");
-            repo.CreateItem(new Checklist() { Name = "list 2", Id = 2 }, "alice");
+            repo.CreateItem(new Checklist() { Name = NameForValidId, Id = IdThatIsValid }, DefaultUsername);
+            repo.CreateItem(new Checklist() { Name = "list 2", Id = 2 }, DefaultUsername);
             repo.CreateItem(new Checklist() { Name = "list 10", Id = IdOwnedBySomeoneElse }, "bob");
 
             var itemToDelete = new Checklist{ Name = "list 3", Id = IdThatWasDeleted };
-            repo.CreateItem(itemToDelete, "alice");
+            repo.CreateItem(itemToDelete, DefaultUsername);
             repo.DeleteItem(itemToDelete);
 
-            repo.CreateItem(new Checklist { Name = "list 4", Id = IdForFailedPut }, "alice");
-            repo.CreateItem(new Checklist { Name = "list 5", Id = IdForSuccessfulPut }, "alice");
-            repo.CreateItem(new Checklist { Name = "list 6", Id = IdToDelete }, "alice");
-
+            repo.CreateItem(new Checklist { Name = "list 4", Id = IdForFailedPut }, DefaultUsername);
+            repo.CreateItem(new Checklist { Name = "list 5", Id = IdForSuccessfulPut }, DefaultUsername);
+            repo.CreateItem(new Checklist { Name = "list 6", Id = IdToDelete }, DefaultUsername);
         }
 
 #region "Get plural"

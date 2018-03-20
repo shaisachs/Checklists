@@ -29,12 +29,13 @@ namespace Checklists.Auth
             _configuration = configuration;
         }
 
-        private const string RapidApiSecretHeaderName = "X-Mashape-Proxy-Secret";
-        private const string RapidApiUsernameHeaderName = "X-Mashape-User";
+        public const string RapidApiSecretHeaderName = "X-Mashape-Proxy-Secret";
+        public const string RapidApiUsernameHeaderName = "X-Mashape-User";
         private const string RapidApiConfigSetting = "RapidApiSecret";
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
+
             var providedSecret = Request.Headers[RapidApiSecretHeaderName];
             if (string.IsNullOrEmpty(providedSecret))
             {

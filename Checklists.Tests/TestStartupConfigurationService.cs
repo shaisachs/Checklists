@@ -22,14 +22,14 @@ namespace Checklists
     public class TestStartupConfigurationService<TDbContext> : IStartupConfigurationService  
         where TDbContext : DbContext
     {
-        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            SetupDatabase(app);
-        }
-
         public virtual void ConfigureEnvironment(IHostingEnvironment env)
         {
             env.EnvironmentName = "Test";
+        }
+
+        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            SetupDatabase(app);
         }
 
         public virtual void ConfigureService(IServiceCollection services, IConfigurationRoot configuration)
