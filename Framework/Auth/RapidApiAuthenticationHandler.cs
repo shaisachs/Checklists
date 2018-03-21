@@ -12,7 +12,7 @@ using Microsoft.Net.Http.Headers;
 using System.Configuration;
 using Microsoft.Extensions.Configuration;
 
-namespace Checklists.Auth
+namespace Framework.Auth
 {
     public class RapidApiAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {

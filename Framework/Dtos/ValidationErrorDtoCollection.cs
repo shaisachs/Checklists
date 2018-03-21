@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Checklists.Models;
+using Framework.Models;
 
-namespace Checklists.Dtos
+namespace Framework.Dtos
 {
     public class ValidationErrorDtoCollection
     {

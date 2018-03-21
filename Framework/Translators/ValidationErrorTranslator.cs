@@ -1,9 +1,9 @@
-using Checklists.Models;
-using Checklists.Dtos;
+using Framework.Models;
+using Framework.Dtos;
 using AutoMapper;
-using Checklists.Validators;
+using Framework.Validators;
 
-namespace Checklists.Translators
+namespace Framework.Translators
 {
     public class ValidationErrorTranslator
     {

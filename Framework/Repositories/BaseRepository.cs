@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System;
-using Checklists.Models;
+using Framework.Models;
 using System.Collections.Generic;
 
-namespace Checklists.Repositories
+namespace Framework.Repositories
 {
     public abstract class BaseRepository<T> where T : BaseModel
     {

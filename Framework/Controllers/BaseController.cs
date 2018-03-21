@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Checklists.Models;
+using Framework.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Checklists.Dtos;
-using Checklists.Translators;
-using Checklists.Repositories;
-using Checklists.Validators;
+using Framework.Dtos;
+using Framework.Translators;
+using Framework.Repositories;
+using Framework.Validators;
 using System.Net;
 
-namespace Checklists.Controllers
+namespace Framework.Controllers
 {
     public abstract class BaseController<TModel, TDto> : Controller
         where TModel : BaseModel

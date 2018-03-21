@@ -1,6 +1,9 @@
-using Checklists.Models;
-using Checklists.Dtos;
+using Framework.Models;
+using Framework.Dtos;
+using Framework.Translators;
 using AutoMapper;
+using Checklists.Dtos;
+using Checklists.Models;
 
 namespace Checklists.Translators
 {

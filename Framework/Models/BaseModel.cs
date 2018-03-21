@@ -1,6 +1,6 @@
 using System;
 
-namespace Checklists.Models
+namespace Framework.Models
 {
     public abstract class BaseModel
     {

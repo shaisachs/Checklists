@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Checklists.Models
+namespace Framework.Models
 {
     public class BaseModelCollection<T> where T : BaseModel
     {

@@ -1,8 +1,8 @@
-using Checklists.Models;
-using Checklists.Dtos;
+using Framework.Models;
+using Framework.Dtos;
 using AutoMapper;
 
-namespace Checklists.Translators
+namespace Framework.Translators
 {
     public class BaseTranslator<TModel, TDto>
         where TModel : BaseModel

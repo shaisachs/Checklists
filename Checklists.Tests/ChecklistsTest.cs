@@ -15,7 +15,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using Checklists.Validators;
-using Checklists.Auth;
+using Framework.Auth;
+using Framework.Models;
+using Framework.Dtos;
+using Framework.Validators;
+using Framework.Repositories;
 
 namespace Checklists.Tests
 {

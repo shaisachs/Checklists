@@ -1,6 +1,5 @@
 
-
-namespace Checklists.Validators 
+namespace Framework.Validators 
 {
     public class ValidationError 
     {

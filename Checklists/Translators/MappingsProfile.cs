@@ -1,7 +1,8 @@
 using AutoMapper;
 using Checklists.Models;
 using Checklists.Dtos;
-using Checklists.Validators;
+using Framework.Validators;
+using Framework.Dtos;
 
 namespace Checklists.Translators 
 {

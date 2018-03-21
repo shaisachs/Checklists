@@ -1,5 +1,7 @@
-using Checklists.Models;
+using Framework.Models;
+using Framework.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Checklists.Models;
 
 namespace Checklists.Repositories
 {

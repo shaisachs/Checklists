@@ -16,6 +16,11 @@ using Checklists.Validators;
 using Checklists.Translators;
 using Checklists.Dtos;
 using Checklists.Repositories;
+using Framework.Models;
+using Framework.Validators;
+using Framework.Translators;
+using Framework.Dtos;
+using Framework.Repositories;
 
 namespace Checklists
 {

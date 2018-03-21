@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Checklists.Models;
-using Checklists.Dtos;
+using Framework.Models;
+using Framework.Dtos;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 
-namespace Checklists.Validators
+namespace Framework.Validators
 {
     public class BaseValidator<TModel>
         where TModel : BaseModel

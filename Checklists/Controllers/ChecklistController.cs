@@ -2,11 +2,15 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Framework.Models;
+using Framework.Dtos;
+using Framework.Translators;
+using Framework.Repositories;
+using Framework.Validators;
+using Framework.Controllers;
+using Checklists.Repositories;
 using Checklists.Models;
 using Checklists.Dtos;
-using Checklists.Translators;
-using Checklists.Repositories;
-using Checklists.Validators;
 
 namespace Checklists.Controllers
 {

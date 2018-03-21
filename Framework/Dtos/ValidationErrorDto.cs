@@ -1,4 +1,4 @@
-namespace Checklists.Dtos
+namespace Framework.Dtos
 {
     public class ValidationErrorDto
     {
