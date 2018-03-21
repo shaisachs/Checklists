@@ -11,7 +11,7 @@ namespace Checklists.Repositories
         {
             get
             {
-                return _context.Checklists;
+                return ((ChecklistsContext)_context).Checklists;
             }
         }
     }

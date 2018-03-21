@@ -9,9 +9,9 @@ namespace Checklists.Repositories
     public abstract class BaseRepository<T> where T : BaseModel
     {
         protected abstract DbSet<T> _dbset { get; }
-        protected ChecklistsContext _context { get; }
+        protected DbContext _context { get; }
 
-        public BaseRepository(ChecklistsContext context)
+        public BaseRepository(DbContext context)
         {
             _context = context;
         }

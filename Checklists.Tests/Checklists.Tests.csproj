@@ -24,4 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Checklists\Checklists.csproj"/>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Framework\Framework.csproj"/>
+  </ItemGroup>
 </Project>
