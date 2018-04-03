@@ -28,9 +28,9 @@ namespace Checklists.Tests
     public class ChecklistTemplateItemsTest : BaseTest<Startup, ChecklistsContext, ChecklistTemplateItem, ChecklistTemplateItemDto>
     {
 // TODO: abstract into basechildtest
-// TODO: better setup for parent data
-// TODO: all permutations of invalid data (name/desc)
-
+// TODO: better setup for parent data in SetupRepository
+// TODO: fix copy/pasta between put and post
+// TODO: move put/post invalid dto tests into base
         private const long ParentIdThatIsOutOfRange = -15;
         private const long ParentIdThatWasDeleted = 15;
         private const long ParentIdOwnedBySomeoneElse = 25;
