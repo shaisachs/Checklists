@@ -10,7 +10,9 @@ namespace Checklists.Translators
     {
         public MappingsProfile()
         {
-            CreateMap<Checklist, ChecklistDto>()
+            CreateMap<ChecklistTemplate, ChecklistTemplateDto>()
+                .ReverseMap();
+            CreateMap<ChecklistTemplateItem, ChecklistTemplateItemDto>()
                 .ReverseMap();
             CreateMap<ValidationError, ValidationErrorDto>()
                 .ReverseMap();

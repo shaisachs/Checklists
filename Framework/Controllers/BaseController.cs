@@ -18,7 +18,7 @@ namespace Framework.Controllers
     {
         private readonly BaseTranslator<TModel, TDto> _translator;
         private readonly BaseValidator<TModel> _validator;
-        private readonly BaseRepository<TModel> _repo;
+        protected BaseRepository<TModel> _repo { get; private set; }
         private readonly ValidationErrorTranslator _errorTranslator;
 
         public BaseController(
@@ -33,13 +33,13 @@ namespace Framework.Controllers
             _errorTranslator = errorTranslator;
         }
 
-        protected BaseDtoCollection<TModel, TDto> GetAllBase(Func<TModel, bool> additionalFilter = null)
+        protected IActionResult GetAllBase(Func<TModel, bool> additionalFilter = null)
         {
             var models = _repo.GetAllItems(CurrentUserName(), additionalFilter);
             var dtos = from model in models select _translator.Translate(model);
             var answer = new BaseDtoCollection<TModel, TDto>() { Items = dtos };
 
-            return answer;
+            return new ObjectResult(answer);
         }
 
         protected IActionResult GetByIdBase(long id)

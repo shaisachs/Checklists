@@ -1,12 +1,12 @@
-- [ ] stats
-- [ ] functional tests
+- [x] functional tests
   - [x] tenancy
   - [x] basic CRUD works
   - [x] inject proper rapidapi config
-  - [ ] abstract out basic testing code
+  - [x] abstract out basic testing code
 - [ ] automate translator, repo injection in startup.cs
 - [x] refactor infrastructure classes into framework
 - [x] dev config for authentication
 - [x] check out http://geeklearning.io/a-different-approach-to-test-your-asp-net-core-application/ and https://www.davepaquette.com/archive/2016/11/27/integration-testing-with-entity-framework-core-and-sql-server.aspx
 - [x] POST tests
-- [ ] nonjanky json serialization in StringContent
+- [x] nonjanky json serialization in StringContent
+- [ ] services layer

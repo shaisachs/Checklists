@@ -21,6 +21,7 @@ using Framework.Validators;
 using Framework.Translators;
 using Framework.Dtos;
 using Framework.Repositories;
+using Framework.Startup;
 
 namespace Checklists
 {
@@ -75,9 +76,12 @@ namespace Checklists
 
             services.AddScoped<ValidationErrorTranslator, ValidationErrorTranslator>();
             // TODO: automate this piece
-            services.AddScoped<BaseValidator<Checklist>, ChecklistValidator>();
-            services.AddScoped<BaseTranslator<Checklist, ChecklistDto>, ChecklistTranslator>();
-            services.AddScoped<ChecklistRepository, ChecklistRepository>();
+            services.AddScoped<BaseValidator<ChecklistTemplate>, ChecklistTemplateValidator>();
+            services.AddScoped<BaseTranslator<ChecklistTemplate, ChecklistTemplateDto>, ChecklistTemplateTranslator>();
+            services.AddScoped<ChecklistTemplateRepository, ChecklistTemplateRepository>();
+            services.AddScoped<BaseValidator<ChecklistTemplateItem>, ChecklistTemplateItemValidator>();
+            services.AddScoped<BaseTranslator<ChecklistTemplateItem, ChecklistTemplateItemDto>, ChecklistTemplateItemTranslator>();
+            services.AddScoped<ChecklistTemplateItemRepository, ChecklistTemplateItemRepository>();
 
             _externalStartupConfiguration.ConfigureService(services, null);
         }
