@@ -70,7 +70,7 @@ namespace Checklists.Tests
         }
 
         [Theory]
-        [MemberData(nameof(GetInvalidDtosForPut))]
+        [MemberData(nameof(GetInvalidDtosForPost))]
         public async void Put_fails_on_invalid_dtos(object dto)
         {
             Put_fails_on_invalid_dtos_base(dto);

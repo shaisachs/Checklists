@@ -28,8 +28,6 @@ namespace Checklists.Tests
     public class ChecklistTemplateItemsTest : BaseTest<Startup, ChecklistsContext, ChecklistTemplateItem, ChecklistTemplateItemDto>
     {
 // TODO: abstract into basechildtest
-// TODO: verify 404s on all routes for: impossible parentid, parent id that doesn't exist, parent id that was deleted, parent id that i don't own
-// TODO: verify failures when parentid doesn't match route
 // TODO: better setup for parent data
 // TODO: all permutations of invalid data (name/desc)
 
@@ -175,8 +173,19 @@ namespace Checklists.Tests
         {
             return new List<object[]>
             {
+                // name absent / fine / too long
+                // desc absent / fine / too long
                 new object[] { new { } },
-                new object[] { new { Name = new String('a', 51) } }
+                new object[] { new { Description = "a" } },
+                new object[] { new { Description = new String('a', 501) } },
+
+                //new object[] { new { Name = "a" } },
+                //new object[] { new { Name = "a", Description = "a" } },
+                new object[] { new { Name = "a", Description = new String('a', 501) } },
+
+                new object[] { new { Name = new String('a', 51) } },
+                new object[] { new { Name = new String('a', 51), Description = "a" } },
+                new object[] { new { Name = new String('a', 51), Description = new String('a', 501) } },
             };
         }
 
@@ -185,15 +194,17 @@ namespace Checklists.Tests
             return new List<object[]>
             {
                 new object[] { new { Id = IdForFailedPut } },
-                new object[] { new { Id = IdForFailedPut, Name = new String('a', 51) } }
+                new object[] { new { Id = IdForFailedPut, Description = "a" } },
+                new object[] { new { Id = IdForFailedPut, Description = new String('a', 501) } },
+
+                new object[] { new { Id = IdForFailedPut, Name = "a", Description = new String('a', 501) } },
+
+                new object[] { new { Id = IdForFailedPut, Name = new String('a', 51) } },
+                new object[] { new { Id = IdForFailedPut, Name = new String('a', 51), Description = "a" } },
+                new object[] { new { Id = IdForFailedPut, Name = new String('a', 51), Description = new String('a', 501) } },
             };
         }
 
-        [Fact]
-        public async new void Get_singular_succeeds_on_valid_id()
-        {
-            base.Get_singular_succeeds_on_valid_id();
-        }
     }
 
 }
