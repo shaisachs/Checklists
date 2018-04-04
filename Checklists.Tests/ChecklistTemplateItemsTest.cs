@@ -25,106 +25,29 @@ using Framework.Tests;
 
 namespace Checklists.Tests
 {
-    public class ChecklistTemplateItemsTest : BaseTest<Startup, ChecklistsContext, ChecklistTemplateItem, ChecklistTemplateItemDto>
+    public class ChecklistTemplateItemsTest : BaseChildTest<Startup, ChecklistsContext, ChecklistTemplateItem, ChecklistTemplateItemDto, ChecklistTemplate>
     {
 // TODO: abstract into basechildtest
-// TODO: better setup for parent data in SetupRepository
-// TODO: fix copy/pasta between put and post
-// TODO: move put/post invalid dto tests into base
-        private const long ParentIdThatIsOutOfRange = -15;
-        private const long ParentIdThatWasDeleted = 15;
-        private const long ParentIdOwnedBySomeoneElse = 25;
-        private const long ParentIdThatIsValidButDoesNotOwnThisItem = 35;
-        private const long ParentIdThatDoesNotExist = 215;
-        private const long ParentIdThatIsValid = 75;
-        
+// TODO: better setup for parent data
+// TODO: all permutations of invalid data (name/desc)
+
         public ChecklistTemplateItemsTest() : base("/api/v1/checklistTemplates/" + ParentIdThatIsValid + "/items/") { }
 
         protected override BaseRepository<ChecklistTemplateItem> SetupRepository(ChecklistsContext context)
         {
-            var _checklistTemplateRepository = new ChecklistTemplateRepository(context);
-
-            var itemToDelete = new ChecklistTemplate() { Id = ParentIdThatWasDeleted, Name = "test template" };
-            _checklistTemplateRepository.CreateItem(itemToDelete, DefaultUsername);
-            _checklistTemplateRepository.DeleteItem(itemToDelete);
-
-            _checklistTemplateRepository.CreateItem(new ChecklistTemplate() { Id = ParentIdOwnedBySomeoneElse, Name = "test template" }, "bob");
-
-            _checklistTemplateRepository.CreateItem(new ChecklistTemplate() { Id = ParentIdThatIsValidButDoesNotOwnThisItem, Name = "test template" }, DefaultUsername);
-            _checklistTemplateRepository.CreateItem(new ChecklistTemplate() { Id = ParentIdThatIsValid, Name = "test template" }, DefaultUsername);
-
             return new ChecklistTemplateItemRepository(context);
         }
 
-#region "NotFounds for bad parent id"
-        [Theory]
-        [InlineData(ParentIdThatIsOutOfRange)]
-        [InlineData(ParentIdThatWasDeleted)]
-        [InlineData(ParentIdThatDoesNotExist)]
-        [InlineData(ParentIdThatIsValidButDoesNotOwnThisItem)]
-        [InlineData(ParentIdOwnedBySomeoneElse)]
-        public async void Get_singular_fails_on_invalid_parentid(long invalidParentId)
+        protected override BaseRepository<ChecklistTemplate> SetupParentRepository(ChecklistsContext context)
         {
-            var response = await _client.GetAsync("/api/v1/checklistTemplates/" + invalidParentId + "/items/" + IdThatIsValid);
-            Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
-
+            return new ChecklistTemplateRepository(context);
+        }
+        protected override ChecklistTemplate CreateValidParentModelWithId(long id)
+        {
+            var name = DateTime.Now.ToString();
+            return new ChecklistTemplate { Id = id, Name = name };
         }
 
-        [Theory]
-        [InlineData(ParentIdThatIsOutOfRange)]
-        [InlineData(ParentIdThatWasDeleted)]
-        [InlineData(ParentIdThatDoesNotExist)]
-        [InlineData(ParentIdOwnedBySomeoneElse)]
-        public async void Get_plural_fails_on_invalid_parentid(long invalidParentId)
-        {
-            var response = await _client.GetAsync("/api/v1/checklistTemplates/" + invalidParentId + "/items/");
-            Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
-
-        }
-
-        [Theory]
-        [InlineData(ParentIdThatIsOutOfRange)]
-        [InlineData(ParentIdThatWasDeleted)]
-        [InlineData(ParentIdThatDoesNotExist)]
-        [InlineData(ParentIdOwnedBySomeoneElse)]
-        public async void Post_fails_on_invalid_parentid(long invalidParentId)
-        {
-            var tuple = CreateValidModelAndDtoWithoutId();
-            var model = tuple.Item1;
-            var dto = tuple.Item2;
-
-            var response = await _client.PostAsync("/api/v1/checklistTemplates/" + invalidParentId + "/items/", SerializeBodyAsJson(dto));
-            Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
-        }
-
-        [Theory]
-        [InlineData(ParentIdThatIsOutOfRange)]
-        [InlineData(ParentIdThatWasDeleted)]
-        [InlineData(ParentIdThatDoesNotExist)]
-        [InlineData(ParentIdThatIsValidButDoesNotOwnThisItem)]
-        [InlineData(ParentIdOwnedBySomeoneElse)]
-        public async void Put_fails_on_invalid_parentid(long invalidParentId)
-        {
-            var tuple = ChangeModelAndDtoToValidState(ItemForCheckingPut);
-            var updatedItem = tuple.Item1;
-            var updatedDto = tuple.Item2;
-
-            var response = await _client.PutAsync("/api/v1/checklistTemplates/" + invalidParentId + "/items/" + IdForSuccessfulPut, SerializeBodyAsJson(updatedDto));
-            Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
-        }
-
-        [Theory]
-        [InlineData(ParentIdThatIsOutOfRange)]
-        [InlineData(ParentIdThatWasDeleted)]
-        [InlineData(ParentIdThatDoesNotExist)]
-        [InlineData(ParentIdThatIsValidButDoesNotOwnThisItem)]
-        [InlineData(ParentIdOwnedBySomeoneElse)]
-        public async void Delete_fails_on_invalid_parentid(long invalidParentId)
-        {
-            var response = await _client.DeleteAsync("/api/v1/checklistTemplates/" + invalidParentId + "/items/" + IdToDelete);
-            Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
-        }
-        #endregion
 
         protected override bool IsEqual(ChecklistTemplateItem expected, ChecklistTemplateItemDto actual)
         {
