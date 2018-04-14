@@ -31,6 +31,16 @@ namespace Framework.Tests
     {
         public BaseChildTest(string baseRoute) : base(baseRoute) { }
 
+        protected override void BeforeSetupRepository(TDbContext context)
+        {
+            ParentRepo = SetupParentRepository(context);
+        }
+
+        protected override void BeforeSetupTestData()
+        {
+            SetupParentTestData();
+        }
+
         protected const long ParentIdThatIsOutOfRange = -15;
         protected const long ParentIdThatWasDeleted = 15;
         protected const long ParentIdOwnedBySomeoneElse = 25;
@@ -41,7 +51,10 @@ namespace Framework.Tests
         protected BaseRepository<TParentModel> ParentRepo { get; set; }
 
         protected abstract BaseRepository<TParentModel> SetupParentRepository(TDbContext context);
+        
         protected abstract TParentModel CreateValidParentModelWithId(long id);
+
+        protected abstract string CreateBasePath(long parentId);
 
         protected void SetupParentTestData()
         {
@@ -56,6 +69,7 @@ namespace Framework.Tests
         }
 
 #region "NotFounds for bad parent id"
+
         [Theory]
         [InlineData(ParentIdThatIsOutOfRange)]
         [InlineData(ParentIdThatWasDeleted)]
@@ -64,7 +78,8 @@ namespace Framework.Tests
         [InlineData(ParentIdOwnedBySomeoneElse)]
         public async void Get_singular_fails_on_invalid_parentid(long invalidParentId)
         {
-            var response = await _client.GetAsync("/api/v1/checklistTemplates/" + invalidParentId + "/items/" + IdThatIsValid);
+            if (!HasGetSingularRoute) { return ; }
+            var response = await _client.GetAsync(CreateBasePath(invalidParentId) + IdThatIsValid);
             Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
 
         }
@@ -76,7 +91,8 @@ namespace Framework.Tests
         [InlineData(ParentIdOwnedBySomeoneElse)]
         public async void Get_plural_fails_on_invalid_parentid(long invalidParentId)
         {
-            var response = await _client.GetAsync("/api/v1/checklistTemplates/" + invalidParentId + "/items/");
+            if (!HasGetPluralRoute) { return ; }
+            var response = await _client.GetAsync(CreateBasePath(invalidParentId));
             Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
 
         }
@@ -88,11 +104,13 @@ namespace Framework.Tests
         [InlineData(ParentIdOwnedBySomeoneElse)]
         public async void Post_fails_on_invalid_parentid(long invalidParentId)
         {
+            if (!HasPostPluralRoute) { return ; }
+
             var tuple = CreateValidModelAndDtoWithoutId();
             var model = tuple.Item1;
             var dto = tuple.Item2;
 
-            var response = await _client.PostAsync("/api/v1/checklistTemplates/" + invalidParentId + "/items/", SerializeBodyAsJson(dto));
+            var response = await _client.PostAsync(CreateBasePath(invalidParentId), SerializeBodyAsJson(dto));
             Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
         }
 
@@ -104,11 +122,13 @@ namespace Framework.Tests
         [InlineData(ParentIdOwnedBySomeoneElse)]
         public async void Put_fails_on_invalid_parentid(long invalidParentId)
         {
+            if (!HasPutSingularRoute) { return ; }
+
             var tuple = ChangeModelAndDtoToValidState(ItemForCheckingPut);
             var updatedItem = tuple.Item1;
             var updatedDto = tuple.Item2;
 
-            var response = await _client.PutAsync("/api/v1/checklistTemplates/" + invalidParentId + "/items/" + IdForSuccessfulPut, SerializeBodyAsJson(updatedDto));
+            var response = await _client.PutAsync(CreateBasePath(invalidParentId) + IdForSuccessfulPut, SerializeBodyAsJson(updatedDto));
             Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
         }
 
@@ -120,9 +140,12 @@ namespace Framework.Tests
         [InlineData(ParentIdOwnedBySomeoneElse)]
         public async void Delete_fails_on_invalid_parentid(long invalidParentId)
         {
-            var response = await _client.DeleteAsync("/api/v1/checklistTemplates/" + invalidParentId + "/items/" + IdToDelete);
+            if (!HasDeleteSingularRoute) { return ; }
+            
+            var response = await _client.DeleteAsync(CreateBasePath(invalidParentId) + IdToDelete);
             Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
         }
+
 #endregion
 
     }

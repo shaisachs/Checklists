@@ -10,3 +10,4 @@
 - [x] POST tests
 - [x] nonjanky json serialization in StringContent
 - [ ] services layer
+- [ ] reduce need for concrete implementations of BaseTranslator / BaseValidator

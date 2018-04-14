@@ -76,7 +76,7 @@ namespace Checklists.Tests
             Put_fails_on_invalid_dtos_base(dto);
         }
 
-        protected new static IEnumerable<object[]> GetInvalidDtosForPost()
+        protected static IEnumerable<object[]> GetInvalidDtosForPost()
         {
             return new List<object[]>
             {
@@ -85,7 +85,7 @@ namespace Checklists.Tests
             };
         }
 
-        protected new static IEnumerable<object[]> GetInvalidDtosForPut()
+        protected static IEnumerable<object[]> GetInvalidDtosForPut()
         {
             return new List<object[]>
             {

@@ -14,6 +14,10 @@ namespace Checklists.Translators
                 .ReverseMap();
             CreateMap<ChecklistTemplateItem, ChecklistTemplateItemDto>()
                 .ReverseMap();
+            CreateMap<Checklist, ChecklistDto>()
+                .ReverseMap();
+            CreateMap<ChecklistItem, ChecklistItemDto>()
+                .ReverseMap();
             CreateMap<ValidationError, ValidationErrorDto>()
                 .ReverseMap();
         }

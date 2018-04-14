@@ -37,7 +37,7 @@ namespace Framework.Repositories
                 model.Creator.Equals(ownerUserName);
         }
 
-        public T CreateItem(T item, string ownerUserName)
+        public virtual T CreateItem(T item, string ownerUserName)
         {
             item.Created = DateTime.Now;
             item.Creator = ownerUserName;

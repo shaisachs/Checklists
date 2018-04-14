@@ -34,7 +34,7 @@ namespace Framework.Tests
         private const int IdThatIsOutOfRange = -1;
         private const int IdThatDoesNotExist = 200;
         private const int IdThatWasDeleted = 30;
-        private const int IdOwnedBySomeoneElse = 100;
+        protected const int IdOwnedBySomeoneElse = 100;
         protected const int IdThatIsValid = 10;
         private TModel ItemForCheckingGet;
 
@@ -46,7 +46,13 @@ namespace Framework.Tests
         private string BaseRoute;
         private TDbContext _context;
 
-        private BaseRepository<TModel> Repository;
+        protected BaseRepository<TModel> Repository;
+
+        protected virtual bool HasGetPluralRoute { get { return true; } }
+        protected virtual bool HasGetSingularRoute { get { return true; } }
+        protected virtual bool HasPostPluralRoute { get { return true; } }
+        protected virtual bool HasPutSingularRoute { get { return true; } }
+        protected virtual bool HasDeleteSingularRoute { get { return true; } }
 
         public BaseTest(string baseRoute)
         {
@@ -57,14 +63,21 @@ namespace Framework.Tests
             _server = new TestServer(webHostBuilder.UseStartup<TStartup>());
             _context = _server.Host.Services.GetService(typeof(TDbContext)) as TDbContext;
 
+            BeforeSetupRepository(_context);
             Repository = SetupRepository(_context);
+            AfterSetupRepository(_context);
+
             _client = SetupClient();
 
+            BeforeSetupTestData();
             SetupTestData();
+            AfterSetupTestData();
         }
 
+        protected virtual void BeforeSetupRepository(TDbContext context) { }
         protected abstract BaseRepository<TModel> SetupRepository(TDbContext context);
-
+        protected virtual void AfterSetupRepository(TDbContext context) { }
+        
         private HttpClient SetupClient()
         {
             var client = _server.CreateClient();
@@ -73,8 +86,9 @@ namespace Framework.Tests
             return client;
         }
 
+        protected virtual void BeforeSetupTestData() { }
 
-        protected void SetupTestData()
+        protected virtual void SetupTestData()
         {
             ItemForCheckingGet = CreateValidModelWithId(IdThatIsValid);
             Repository.CreateItem(ItemForCheckingGet, DefaultUsername);
@@ -93,6 +107,8 @@ namespace Framework.Tests
             Repository.CreateItem(CreateValidModelWithId(IdToDelete), DefaultUsername);
         }
 
+        protected virtual void AfterSetupTestData() { }
+
         protected abstract TModel CreateValidModelWithId(long id);
 
         // todo: inject translator so we don't have to kick out a dto
@@ -106,6 +122,8 @@ namespace Framework.Tests
         [Fact]
         public async void Get_plural_includes_only_valid_ids()
         {
+            if (!HasGetPluralRoute) { return ; }
+
             var response = await _client.GetAsync(BaseRoute);
             response.EnsureSuccessStatusCode();
 
@@ -127,6 +145,8 @@ namespace Framework.Tests
         [Fact]
         public async void Get_singular_succeeds_on_valid_id()
         {
+            if (!HasGetSingularRoute) { return ; }
+
             var response = await _client.GetAsync(BaseRoute + IdThatIsValid);
             response.EnsureSuccessStatusCode();
 
@@ -143,18 +163,22 @@ namespace Framework.Tests
         [InlineData(IdOwnedBySomeoneElse)]
         public async void Get_singular_fails_on_invalid_id(int invalidId)
         {
+            if (!HasGetSingularRoute) { return ; }
+
             var response = await _client.GetAsync(BaseRoute + invalidId);
             Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
         }
 #endregion
 
-#region "Post"
+#region "Post plural"
         [Theory]
         [InlineData("")]
         // todo: abstract this malformed-but-otherwise-valid-dto logic away
         [InlineData("name=blah")]
         public async void Post_fails_on_malformed_body(string body)
         {
+            if (!HasPostPluralRoute) { return ; }
+
             var response = await _client.PostAsync(BaseRoute,
                 new StringContent(body, Encoding.UTF8, "application/json"));
 
@@ -167,6 +191,8 @@ namespace Framework.Tests
 
         protected async void Post_fails_on_invalid_dtos_base(object dto)
         {
+            if (!HasPostPluralRoute) { return ; }
+
             var response = await _client.PostAsync(BaseRoute, SerializeBodyAsJson(dto));
 
             Assert.Equal<HttpStatusCode>(HttpStatusCode.BadRequest, response.StatusCode);
@@ -179,6 +205,8 @@ namespace Framework.Tests
         [Fact]
         public async void Post_successfully_creates_item()
         {
+            if (!HasPostPluralRoute) { return ; }
+            
             var tuple = CreateValidModelAndDtoWithoutId();
             var model = tuple.Item1;
             var dto = tuple.Item2;
@@ -208,7 +236,7 @@ namespace Framework.Tests
         }
 #endregion
 
-#region "Put"
+#region "Put singular"
         [Theory]
         [InlineData(IdThatIsOutOfRange)]
         [InlineData(IdThatWasDeleted)]
@@ -216,6 +244,8 @@ namespace Framework.Tests
         [InlineData(IdOwnedBySomeoneElse)]
         public async void Put_singular_fails_on_invalid_id(int invalidId)
         {
+            if (!HasPutSingularRoute) { return ; }
+
             var response = await _client.PutAsync(BaseRoute + invalidId, SerializeBodyAsJson(new { Id = invalidId }));
             Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -227,6 +257,8 @@ namespace Framework.Tests
         [InlineData("id=4")]
         public async void Put_fails_on_malformed_body(string body)
         {
+            if (!HasPutSingularRoute) { return ; }
+
             var response = await _client.PutAsync(BaseRoute + IdForFailedPut, 
                 new StringContent(body, Encoding.UTF8, "application/json"));
 
@@ -251,6 +283,8 @@ namespace Framework.Tests
         [Fact]
         public async void Put_successfully_updates_item()
         {
+            if (!HasPutSingularRoute) { return ; }
+
             var tuple = ChangeModelAndDtoToValidState(ItemForCheckingPut);
             var updatedItem = tuple.Item1;
             var updatedDto = tuple.Item2;
@@ -274,7 +308,7 @@ namespace Framework.Tests
         }
 #endregion
 
-#region "Delete"
+#region "Delete singular"
         [Theory]
         [InlineData(IdThatIsOutOfRange)]
         [InlineData(IdThatWasDeleted)]
@@ -282,6 +316,8 @@ namespace Framework.Tests
         [InlineData(IdOwnedBySomeoneElse)]
         public async void Delete_singular_fails_on_invalid_id(int invalidId)
         {
+            if (!HasDeleteSingularRoute) { return ; }
+
             var response = await _client.DeleteAsync(BaseRoute + invalidId);
             Assert.Equal<HttpStatusCode>(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -289,6 +325,8 @@ namespace Framework.Tests
         [Fact]
         public async void Delete_successfully_deletes_item()
         {
+            if (!HasDeleteSingularRoute) { return ; }
+            
             var deleteResponse = await _client.DeleteAsync(BaseRoute + IdToDelete);
 
             Assert.Equal<HttpStatusCode>(HttpStatusCode.NoContent, deleteResponse.StatusCode);
@@ -303,7 +341,6 @@ namespace Framework.Tests
             Assert.False(getPluralData.Items.Any(i => i.Id == IdToDelete));
         }
 #endregion
-
         protected StringContent SerializeBodyAsJson(object body)
         {
             return new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");

@@ -83,6 +83,15 @@ namespace Checklists
             services.AddScoped<BaseTranslator<ChecklistTemplateItem, ChecklistTemplateItemDto>, ChecklistTemplateItemTranslator>();
             services.AddScoped<ChecklistTemplateItemRepository, ChecklistTemplateItemRepository>();
 
+            services.AddScoped<BaseValidator<Checklist>, ChecklistValidator>();
+            services.AddScoped<BaseTranslator<Checklist, ChecklistDto>, ChecklistTranslator>();
+            services.AddScoped<ChecklistRepository, ChecklistRepository>();
+            services.AddScoped<BaseRepository<ChecklistTemplate>, ChecklistTemplateRepository>();
+
+            services.AddScoped<BaseValidator<ChecklistItem>, ChecklistItemValidator>();
+            services.AddScoped<BaseTranslator<ChecklistItem, ChecklistItemDto>, ChecklistItemTranslator>();
+            services.AddScoped<ChecklistItemRepository, ChecklistItemRepository>();
+
             _externalStartupConfiguration.ConfigureService(services, null);
         }
 

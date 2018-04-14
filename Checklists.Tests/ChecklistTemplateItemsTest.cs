@@ -27,9 +27,6 @@ namespace Checklists.Tests
 {
     public class ChecklistTemplateItemsTest : BaseChildTest<Startup, ChecklistsContext, ChecklistTemplateItem, ChecklistTemplateItemDto, ChecklistTemplate>
     {
-// TODO: abstract into basechildtest
-// TODO: better setup for parent data
-// TODO: all permutations of invalid data (name/desc)
 
         public ChecklistTemplateItemsTest() : base("/api/v1/checklistTemplates/" + ParentIdThatIsValid + "/items/") { }
 
@@ -76,6 +73,11 @@ namespace Checklists.Tests
 
             return new Tuple<ChecklistTemplateItem, ChecklistTemplateItemDto>(oldModel,
                 new ChecklistTemplateItemDto() { Id = oldModel.Id, Name = oldModel.Name, Description = oldModel.Description, ParentId = ParentIdThatIsValid });
+        }
+
+        protected override string CreateBasePath(long parentId)
+        {
+            return "/api/v1/checklistTemplates/" + parentId + "/items/";
         }
 
         [Theory]

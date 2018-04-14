@@ -12,5 +12,7 @@ namespace Checklists.Repositories
 
         public DbSet<ChecklistTemplate> ChecklistTemplates { get; set; }
         public DbSet<ChecklistTemplateItem> ChecklistTemplateItems { get; set; }
+        public DbSet<Checklist> Checklists { get; set; }
+        public DbSet<ChecklistItem> ChecklistItems { get; set; }
     }
 }
